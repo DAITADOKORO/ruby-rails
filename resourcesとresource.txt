@@ -1,0 +1,13 @@
+resourcesとresource
+
+
+route.rbにて
+
+resources :post_images, only: [:new, :create, :index, :show] do
+    resource :post_comments, only: [:create, :destroy]
+end
+
+単数にすると、そのコントローラのidがリクエストに含まれなくなる。
+上記の場合では、post_commentsのshowページが不要で、idの受け渡しもないので、resourceとなる。
+resourcesで指定したコントローラ名に、resourceで指定したコントローラ名が続くurlが生成される。
+このような親子関係を「ネストする」という。

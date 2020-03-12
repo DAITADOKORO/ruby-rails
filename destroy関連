@@ -1,0 +1,28 @@
+destroy関連
+
+
+手っ取り早い削除ボタンの作成
+<%=link_to '表示するテキスト', URL, method: :delete %>
+URLはdestroy_todolist_path(@list.id)みたいな。
+
+
+コントローラ。
+
+def destroy
+	list = List.find(params[:id])
+	list.destroy
+	redirect_to todolists_path
+end
+
+
+routeも設定
+
+
+自分だけデータを消したい場合
+
+<% if @post_image.user == current_user %>
+	<%= link_to "削除", post_image_path(@post_image), method: :delete %>
+<% end %>
+
+current_userはdevise側が用意しているヘルパー。
+

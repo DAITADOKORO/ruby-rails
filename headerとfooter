@@ -1,0 +1,7 @@
+headerとfooter:rails編
+
+
+場所
+app/views/layouts/application.html.erb
+
+書きたかったらここに書け！

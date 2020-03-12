@@ -1,0 +1,14 @@
+ランダムな文字列の表示法
+
+8桁の文字
+
+def random_domain
+  ('a'..'z').to_a.shuffle[0..7].join
+end
+
+8桁の数字混じり
+
+def random_subdomain
+('a'..'z').to_a.concat((0..9).to_a).shuffle[0..7].join
+end
+

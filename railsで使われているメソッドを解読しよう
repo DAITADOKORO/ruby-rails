@@ -1,0 +1,59 @@
+railsで使われているメソッドを解読しよう
+
+
+スタイルシートを追加する一文
+
+<%= stylesheet_link_tag 'application', media: 'all',
+                                       'data-turbolinks-track': 'reload' %>
+実はこれ、丸括弧と波括弧を省略してます。
+
+stylesheet_link_tag 'application', media: 'all',
+                                   'data-turbolinks-track': 'reload'
+
+stylesheet_link_tag('application', media: 'all',
+                                   'data-turbolinks-track': 'reload')
+
+stylesheet_link_tag 'application', { media: 'all',
+                                     'data-turbolinks-track': 'reload' }
+
+
+ぜーんぶ同じ。
+
+'application'でスタイルシートへのパスを示す。
+media:'all'でメディアタイプを示す。
+次のハッシュでtubolinksなる機能をオンにしている。
+
+
+s="foobar"
+
+何気なく使っている””ダブルクオーテーション。こいつ。
+
+実は、　s.class
+    => String
+  と、文字列のコンストラクタである（暗黙のリテラルコンストラクタ）
+
+つまるところ、上の記述は、
+
+s=String.new("foobar")
+
+これと一緒。
+
+
+配列の場合。変わらず。
+
+a=Arrey.new([1,3,2])
+=>[1,3,2]
+
+
+ハッシュの場合。若干異なる。
+
+>> h = Hash.new
+=> {}
+>> h[:foo]            # 存在しないキー (:foo) の値にアクセスしてみる
+=> nil
+>> h = Hash.new(0)    # 存在しないキーのデフォルト値をnilから0にする
+=> {}
+>> h[:foo]
+=> 0
+
+

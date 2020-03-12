@@ -1,0 +1,24 @@
+仮想環境の開始
+	仮想環境の起動
+		1.仮想環境のディレクトリへ移動
+		2.仮想環境を起動
+			vagrant up
+		3.ssh接続
+		4.共有フォルダへ移動
+		5.
+		作業の終了
+			仮想環境からのログアウト
+				exit
+			仮想環境のシャットダウン
+				vagrant halt
+			仮想環境の休止
+				vagrant suspend
+				（再開にはvagrant up）
+railsサーバの起動
+
+$ rails server -b 0.0.0.0
+$ rails s -b 0.0.0.0　　どちらでも
+
+http://localhost:3000/top
+topのリンク。
+:3000はポート番号

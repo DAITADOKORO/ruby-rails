@@ -1,0 +1,17 @@
+ssh -i /Users/dai/.ssh/practice-aws.pem ec2-user@18.176.58.44
+
+mysql -u root -p -h rds-mysql-server.csatmpmc7h1k.ap-northeast-1.rds.amazonaws.com
+
+
+
+<<https://github.com/DAITADOKORO/ouyoukadai>>
+
+scp -i ~/.ssh/practice-aws.pem master.key ec2-user@18.176.58.44:kadai3/config
+
+scp -i ~/.ssh/practice-aws.pem database.yml ec2-user@18.176.58.44:kadai3/config
+
+sudo vi /etc/nginx/nginx.conf
+
+sudo vi /etc/nginx/conf.d/ouyoukadai.conf
+
+sudo chown -R ec2-user /var/lib/nginx

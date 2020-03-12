@@ -1,0 +1,28 @@
+マイページの作成
+
+
+rails g controller users show
+
+コントローラとアクションを同時に作成。
+
+アクション
+
+def show
+	@user = User.find(params[:id])
+	@post_images = @user.post_images.page(params[:page]).reverse_order
+		# そのユーザが投稿したもののみ表示できる。
+end
+
+ルーティング
+
+resources :users, only: [:show]
+
+get以下を削除
+
+マイページへのリンク
+
+      <li class="">
+        <%= link_to 'マイページ', user_path(current_user.id) %>
+      </li>
+
+

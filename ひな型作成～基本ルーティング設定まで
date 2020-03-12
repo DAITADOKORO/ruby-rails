@@ -1,0 +1,36 @@
+ひな型作成
+cd desktop/work/vagrant
+vagrant up
+teraterm起動
+/vagrant に移動
+rails new フォルダ名
+
+モデル設定
+rails g model モデル名（大文字単数形）
+(カラムが決まっているとき)
+rails g model モデル名 カラム名１:データ型１ カラム名２:データ型２ …
+rails db:migrate
+（データ型の種類）
+string：短い文字列用（２５５文字）
+text：長い文字列用（無限）
+
+コントローラの作成
+rails g controller コントローラ名 index view使うアクション全まとめ
+（RESTfulなURL)
+index記事一覧＋Top show詳細表示ページ new新規投稿ページ create記事の保存 edit記事編集 update記事更新 destroy記事削除
+これらの中では、index show new edit が該当
+
+超便利なルーティング設定
+上記のRESTfulなURLを自動設定してくれる、resouces メソッドを使用
+routes.rb内の他のget行を削除。その後、
+resources :コントローラ名（小文字複数形）
+(rails routesでルーティング確認)
+
+view設定
+index.html.erbにhtmlを記述
+app/assets/stylesheetsフォルダ内のapplication.cssにcssを記述
+application.html.erbにfont-awesome読み込みなどのHTMLを追記
+画像用フォルダの作成(app/assets/imagesフォルダ内に、作りたければさらにimgフォルダを作成)
+
+いったん動作確認
+rails s -b 0.0.0.0

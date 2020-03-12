@@ -1,0 +1,120 @@
+投稿機能の作成
+
+1.投稿までの流れ
+　フォームに画面を表示
+　　　　　↓
+　フォームにデータ入力、送信
+　　　　　↓
+　送信内容をデータベースへ保存
+　　　　　↓
+　リダイレクト（投稿後の行き先）
+
+2.コントローラと投稿機能のアクションを作成
+
+今回は、
+$ rails g controller todolists new
+
+$ rails g controller コントローラ名 アクション名
+
+これにより、
+・todolists_controller.rbに、newアクションを追加する（def new）
+・app/views/todolists以下に、new.html.erbを作成する
+・routes.rbに、new.html.erbまでのルーティングを作成する
+
+3.フォームの作成
+
+app/views/todolists/new.html.erbにform_forヘルパーで作成
+
+＝form_forヘルパーとは＝
+共通処理をまとめた「ヘルパーメソッド」、その一つ。
+こいつひとつでHTMLの<form>タグを作成できる。
+モデルを基にしてフォーム欄を作成するため、関連するモデルが必要。
+なので空のモデルを作成するのだが、先のListモデルをtodolistsコントローラと結び付けたい（コントローラからviewへのデータの受け渡しを行いたい）
+ので、以下の通りにする
+
+(app/controllers/todolists_controller.rb内)
+class TodolistsController < ApplicationController
+    def new
+        # Viewへ渡すためのインスタンス変数に空のモデルオブジェクトを生成する。
+        @list = List.new
+　　end
+end
+
+インスタンス変数のため、先頭には必ず@。
+これで空のモデルが生成された。
+
+(htmlにて)
+<%= form_for(@list, url: '/todolists') do |f| %>
+<% end %>
+
+上記の形を基礎に記述していく。
+
+例）
+<h1>新規投稿</h1>
+<!-- form_for部分 -->
+<%= form_for(@list, url: '/todolists') do |f| %>
+    <h4>タイトル</h4>
+    <%= f.text_field :title %>
+    <h4>本文</h4>
+    <%= f.text_area :body %>
+    <%= f.submit '投稿' %>
+<% end %>
+
+4.入力されたデータの送信先の決定
+
+上のhtml.erbファイルはデータの入力のみを担当している。
+よって、保存のためのルーティングを設定する。
+ここでは、｛todolistsコントローラのcreateアクション｝に設定する。
+createアクションでDBへの保存の処理を書く。
+
+・routingの追加
+(config/routes.rbにて)
+post 'todolists' => 'todolists#create'
+
+上記のcreateアクションにより、データを登録するための処理が書かれ出す。
+あとは、以下の処理をつなげて行いたい。
+
+
+　データ新規登録のためのインスタンス作成
+　データをDBに保存するためのsaveメソッド実行
+　トップ画面へリダイレクト
+
+よって、createアクションと、データを受け取るlist_Paramsを定義していく。
+
+（app/controllers/todolists_controller.rbにて）
+class TodolistsController < ApplicationController
+ 
+    def new
+         @list = List.new
+    end
+    
+    # 以下を追加
+    def create
+        # ストロングパラメーターを使用
+         list = List.new(list_params)
+        # DBへ保存する
+         list.save
+        # トップ画面へリダイレクト
+        redirect_to '/top'
+    end
+    private
+   
+    def list_params
+        params.require(:list).permit(:title, :body)
+    end
+ 
+end
+
+＝ストロングパラメータとは＝
+　データ送信時に不正なリクエストを受けないよう用意された仕組み。
+
+＝privateとは＝
+　controllerの中でしか呼び出せなくする境界線。
+　（モデル名_paramsとすることが多い)
+　一番下のendの上に書いて、ほかのアクションを巻き込まないようにすること。
+　フォームの入力値をcontrollerのcreateやupdateにわたす役割もある。
+
+このとき、@をつけていないのはローカル変数を使用しているため。
+ローカル変数はビューファイルに受け渡しができず、アクション内でしか利用できない。
+ぶっちゃけインスタンス変数で同じことができる。
+ただ、インスタンス変数のように利用できる範囲が広いと不具合が起きる原因となるため、ローカル変数を使用することがある。

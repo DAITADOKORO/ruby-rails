@@ -1,0 +1,69 @@
+devise　ユーザ登録機能を使おう
+
+
+gem 'devise'
+bundle install
+rails g devise:install
+
+	*エラーが出たら　Gemfileのgem 'sqlite3'を、　gem 'sqlite3', '~> 1.3.6'　に。
+
+モデル作成　＊devise独自のルールmodel じゃなくて devise
+
+rails g devise User
+
+migrateのコメントアウト＃を必要箇所だけ外す。
+## Trackableの下はサインイン関係なので基本外すかと。
+
+　＊nameをログインに加えたい場合＊
+	t.string :name　をt.timestampsの上あたりにでも。
+
+rails db:migrate
+
+ログインでviewを作るときの機能と関連付けをひとまとめに作る。
+
+場所　app/views/devise/session/new.html.erb
+
+rails g devise:views
+
+
+　＊deviseで新規登録する際の記述法＊
+
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+
+	= resource =
+	devise独自の記述。
+	form_forで利用するモデルを取得し、モデル名としてresource_nameを使用できるようにしている
+
+
+deviseのコントローラに修正が必要なときは（今回はカラムname)
+
+app/controllers/application_controller.rbにて
+
+
+class ApplicationController < ActionController::Base
+
+  before_action :configure_permitted_parameters, if: :devise_controller?
+  protected
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
+  end
+
+end
+
+
+configure_permitted_parameters：ログインやユーザ登録が使われる前に実行されるメソッド？
+(:sign_up, keys: [:name])sign_upの際に、nameのデータ操作が許可される。
+
+
+ログイン認証後の画面設定　routes.rbにて
+
+root '指定先'　   'post_images#index'　のような感じで。
+
+deviseではログイン認証後にrootへredirectされるため。
+
+
+ログイン画面へのredirect（認証してなきゃ他ページは見せないよ！）
+
+app/controllers/application_controller.rbにて
+
+    before_action :authenticate_user!

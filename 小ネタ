@@ -1,0 +1,113 @@
+トップ画面　/
+books（index?)
+show
+edit
+(投稿後）Book was successfully created.
+(更新後）Book was successfully updated.
+どちらも詳細画面に遷移
+
+
+backボタンはbooksページへ
+
+
+/画面の変更
+
+
+rails g controller home index
+routes.rbにて
+root to: 'home#index'
+確認）rake routes
+
+
+
+
+投稿フォームの作成
+
+任意のhtml.erbにて
+
+<h1>新規投稿</h1>
+<!-- form_for部分 -->
+<%= form_for(@blog) do |f| %>
+ 
+    <h4>タイトル</h4>
+    <%= f.text_field :title %>
+ 
+    <h4>カテゴリー</h4>
+    <%= f.text_field :category %>
+ 
+    <h4>本文</h4>
+    <%= f.text_area :body %>
+ 
+    <%= f.submit '投稿' %>
+ 
+<% end %>
+
+対応するコントローラにて
+
+class BlogsController < ApplicationController
+   
+　　...
+  
+    def create
+        blog = Blog.new(blog_params)
+        blog.save
+        redirect_to blogs_path
+    end
+ 
+    private
+    def blog_params
+      params.require(:blog).permit(:title, :category, :body)
+    end
+  end
+
+対応するアクションにて
+	def new
+		@blog = Blog.new
+	end
+
+
+
+
+HTMLでテーブルを表示する
+
+<table></
+	テーブルを作るタグ
+<tr></ table record
+	レコードをまとめる
+
+<td></ table data
+	セル要素。表の値（データ）
+<th></ table theme
+	セル要素。表の見出し
+
+<thead></ table head
+	<table>タグ内で、テーブルのヘッダ部分
+<tbody></
+<tfoot></
+
+colspan
+	セルの連結 <td colspan> と表記
+	colspan="n" n個のセルを連結する
+
+rowspan
+	縦列版。
+	<td rowspan>と表記
+
+例）
+
+<table border="1">　枠ができる。
+  <tr>
+    <th>日本語</th>
+    <th>英語</th>
+  </tr>
+  <tr>
+    <td>東京</td>
+    <td>Tokyo</td>
+  </tr>
+  <tr>
+    <td>大阪</td>
+    <td>Osaka</td>
+  </tr>
+</table>
+
+

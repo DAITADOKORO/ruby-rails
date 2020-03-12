@@ -1,0 +1,68 @@
+バリデーションの利用
+
+
+対象となるモデルにて
+
+        validates :shop_name, presence: true
+        validates :image, presence: true
+
+
+文章量の制限については
+
+        validates :body, length: { in: 1..100 }
+
+対象コントローラにて
+
+        if @post_image.save
+          redirect_to post_images_path
+        else
+          render :new
+        end
+
+render :アクション名で、同じコントローラ内の別アクションのViewを表示
+
+
+	＊redirect_toとrenderの違い
+
+	redirect_to HTTPリクエストがサーバーに送られ、サーバーから帰ってくるHTMLが表示される
+	render　他のViewを呼び出せる
+
+
+＊エラー文の吐き出し
+
+基本形
+
+<%= form_for(@post_image) do |f| %>
+ 
+    <% if @post_image.errors.any? %>
+        <%= @post_image.errors.count %>件のエラーが発生しました
+        <% @post_image.errors.full_messages.each do |message| %>
+            <%= message %>
+        <% end %>
+    <% end %>
+ 
+    <%= f.attachment_field :image %>
+    <%= f.text_field :shop_name %>
+    <%= f.text_area :caption %>
+    <%= f.submit %>
+<% end %>
+
+実用系
+
+<%= form_for(@post_image, url: post_images_path) do |f| %>
+  <% if @post_image.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= @post_image.errors.count %>件のエラーが発生しました。</h2>
+      <ul>
+      <% @post_image.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+………
+
+<% end %>
+
+
+

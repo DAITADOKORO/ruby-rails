@@ -1,0 +1,30 @@
+debuggerとbyebug
+
+気になるビューのアクションに
+
+def show
+  ...
+  debugger
+end
+
+と差し込む
+
+
+気になるビューを起動すると、ターミナルに
+
+(byebug)
+
+と、byebugプロンプトが表示されている。
+
+このプロンプトではrailsconsoleのようにコマンドを呼び出すことができ、debuggerが呼び出された瞬間の状態を確認することができる。
+
+(byebug) @user.name
+"Example User"
+(byebug) @user.email
+"example@railstutorial.org"
+(byebug) params[:id]
+"1"
+
+こんな感じ。
+
+解決したらdebuggerは消すこと。

@@ -1,0 +1,90 @@
+Bootstrapの使い方
+
+
+グリッドシステム
+	12本のグリッドによりサイトの横幅を12分割している。
+
+	＝　３つのclass　＝
+		.containerの中に.rowの中に.col
+
+		.container
+			画面幅によってあらかじめ決定される
+				xl 1200px over > lg 1170px
+				lg 992~1200px  > md 970px
+				md 768~992px   > sm 750px
+				sm 544px~768px > xs auto
+				xs 544px under >
+		.row
+			行に適用するclass
+			コンテナを水平に分割して、上から下へ積み重ねられる。
+		.col
+			列に適用するclass
+			.rowを縦に分割し、左から右へ並べられる。最大１２分割
+
+		.colの書き方
+
+		.col-画面幅-グリッド数
+
+		.col-lg-8
+
+	<div class="col-lg-8"></div>
+
+
+使い方手順
+
+gem 'bootstrap-sass', '~> 3.3.6'
+gem 'jquery-rails'
+
+bundle install
+
+拡張子の変更（下はコマンド）
+mv app/assets/stylesheets/application.css app/assets/stylesheets/application.scss
+
+scss最下層に追加
+
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+app/assets/javascripts/application.jsに追加(require_treeの上あたりに)
+
+//= require jquery
+//= require bootstrap-sprockets
+
+viewファイルで以下のように追加
+
+<table class="table table-striped">
+</table>
+	レイアウトがこれだけで整う
+
+tableタグを囲うように追加
+
+  <div class="container"> <!-- ここを追加 -->
+      <div class="row">   <!-- ここを追加 -->
+
+さらにサイドバー追加
+<div class="container">
+      <div class="row">
+          <!-- 以下を追加 -->
+          <div class="col-lg-4" style="background-color: orange;">
+              <h2>サイドバー</h2>
+          </div>
+
+テーブルサイズ変更
+			 <div class="col-lg-8">  <!-- ここを追加 -->
+              <table class="table table-striped">
+
+
+ボタンのレイアウト
+
+<%= link_to 'New Post', new_post_path, class: "btn btn-default" %>
+
+btn btn-００（色やサイズなど指定)で、思い通りに設定できる。
+
+
+アイコンの使い方
+
+<span class="glyphicon glyphicon-アイコン名" aria-hidden="true"></span>
+
+spanタグにclass名を指定するだけで簡単に使える。
+
+

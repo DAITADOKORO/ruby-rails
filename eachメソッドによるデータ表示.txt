@@ -1,0 +1,21 @@
+eachメソッドによるデータ表示
+
+
+基本形
+
+ <h1>投稿一覧</h1>
+ <% @lists.each do |list| %>
+    <p>タイトル</p>
+    <span><%= list.title %></span>
+ <% end %>
+
+
+def index
+	@lists = List.all
+
+繰り返し引き出すからね、sはそのための区分。
+
+詳細に飛ばす際には、
+def show
+	@list =List.find(params[:id])
+end

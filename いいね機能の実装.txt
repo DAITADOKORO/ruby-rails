@@ -1,0 +1,96 @@
+いいね機能の実装
+
+
+テーブル
+  カラム       データ型
+    id        integer   いいね　ごとのID
+    user_id   integer   いいね　したユーザID
+    image_id  integer   いいね　を付けた投稿画像のID
+
+モデル（Favorite）作って
+関連付けして
+コントローラ作ってcreateとdestroy追加して
+下記のview参考に(bootstrap3の場合)view作って
+下記のコントローラ参考にアクション追加。
+
+
+
+
+
+ルーティング
+resources :post_images, only: [:new, :create, :index, :show] do
+      resource :favorites, only: [:create, :destroy]
+      resource :post_comments, only: [:create, :destroy]
+end
+
+カラム
+id	integer	「いいね」ごとのID
+user_id	integer	「いいね」したユーザのID
+post_image_id	integer	「いいね」を付けた投稿画像のID
+
+モデル
+
+$ rails g model Favorite user_id:integer post_image_id:integer
+
+関連付け
+	userモデル
+		has_many :favorites, dependent: :destroy
+
+	PostImageモデル
+		has_many :favorites, dependent: :destroy
+	    def favorited_by?(user)
+          favorites.where(user_id: user.id).exists?
+        end
+
+favorited_by?メソッドで、引数で渡されたユーザIDがFavoritesテーブル内に存在するかどうか（exists?）を調べる。
+
+	Favoriteモデル
+	  belongs_to :user
+	  belongs_to :post_imag
+
+rails db:migrate
+
+
+コントローラ
+
+rails g controller Favorites
+
+class FavoritesController < ApplicationController
+        def create
+            post_image = PostImage.find(params[:post_image_id])
+            favorite = current_user.favorites.new(post_image_id: post_image.id)
+            favorite.save
+            redirect_to post_image_path(post_image)
+        end
+        def destroy
+            post_image = PostImage.find(params[:post_image_id])
+            favorite = current_user.favorites.find_by(post_image_id: post_image.id)
+            favorite.destroy
+            redirect_to post_image_path(post_image)
+        end
+end
+
+
+view
+
+<li>
+    <i class="fa fa-calendar"></i><%= @post_image.created_at.strftime('%Y/%m/%d') %>
+  </li>
+<!-- ここから -->
+<% if @post_image.favorited_by?(current_user) %>
+  <li>
+    <%= link_to post_image_favorites_path(@post_image), method: :delete do %>
+      <i class="fa fa-heart" aria-hidden="true" style="color: red;"></i>
+      <%= @post_image.favorites.count %> いいね
+    <% end %>
+  </li>
+<% else %>
+  <li>
+    <%= link_to post_image_favorites_path(@post_image), method: :post do %>
+      <i class="fa fa-heart-o" aria-hidden="true"></i>
+      <%= @post_image.favorites.count %> いいね
+    <% end %>
+  </li>
+<% end %>
+<!-- ここまで -->
+

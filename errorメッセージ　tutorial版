@@ -1,0 +1,52 @@
+errorメッセージ　tutorial版
+
+部分テンプレートにて
+
+
+<% if @user.errors.any? %>
+  <div id="error_explanation">
+    <div class="alert alert-danger">
+      The form contains <%= pluralize(@user.errors.count, "error") %>.
+    </div>
+    <ul>
+    <% @user.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+
+
+countメソッド　
+
+  エラーの数を返す。
+
+any? メソッド
+
+  empty? の真逆
+
+>> user.errors.empty?
+=> false
+>> user.errors.any?
+=> true
+
+pluralize メソッド
+
+  複数形で返してくれる。英語専用。
+
+>> helper.pluralize(2, "woman")
+=> "2 women"
+>> helper.pluralize(3, "erratum")
+=> "3 errata"
+
+
+
+このままだと、空のパスワードを入れると、
+presence: true と　has_secure_password
+の両方でエラーが発生し、同じエラーメッセージを表示してしまう。
+
+そこで、
+
+allow_nil: true
+
+後ほど追加。乞うご期待。

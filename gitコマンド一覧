@@ -1,0 +1,12 @@
+git remote -v
+
+git remote origin master
+
+
+
+git diff  ファイルの差分確認コマンド
+git diff --cached  コミット前でのファイル差分確認コマンド
+
+git checkout --file名ordirectry名　ワークツリー変更取り消し
+
+git add -p 選択的な上げ方ができる

@@ -1,0 +1,23 @@
+マイグレーションファイルの編集
+
+
+def change
+	create_table :テーブル名 do |t|
+		t.データ型 :カラム名
+	end
+end
+
+# を削って中にある記述をむき出しにする
+
+rails db:migrate
+
+
+　＊カラムの追加・削除
+・追加・
+$ rails g migration Addカラム名Toテーブル名 カラム名:型名
+$ rails db:migrate
+・削除・
+$ rails g migration Removeカラム名Fromテーブル名 カラム名:型名
+$ rails db:migrate
+
+例）$ rails g migration RemoveNameFromLists name:string

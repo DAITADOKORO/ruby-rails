@@ -1,0 +1,61 @@
+link_toメソッド
+
+基本形
+
+
+<%=link_to list.title, todolist_path(list.id) %>
+
+
+<%=link_to 表示させるテキスト, "リンク先URL_path(オプション)"
+
+<%=link_to list.title, todolist_path(list.id) %>
+ここの表記は、
+<%=link_to list.title, "/todolists/#{list.id}" %>
+これでも可。
+idを削っても同様の結果を得られる。
+
+
+併せてリダイレクト先も設定。
+
+redirect_to todolist_path(list.id)
+
+todolistのeditに向かわせたい場合は、
+
+redirect_to edit_todolist_path(list.id)
+
+
+一覧画面に詳細画面リンクを設定する
+
+<%= link_to post_image_path(post_image.id) do %>
+    <%= attachment_image_tag post_image, :image %>
+<% end %>
+
+
+<%= link_to(URL) do %>と<% end %>の間にHTML要素を書くことで、その部分をリンクにすることができます。
+
+<%= link_to  hoge_path, class: 'btn btn-default' do 
+ %>
+  <i class="fa fa-arrow-left"></i>
+  <span>戻る</span>
+<% end %>
+
+こんなのでも。
+
+
+devise関連へのリンク
+
+
+<%= link_to "ログアウト", destroy_user_session_path, method: :delete %>
+
+<%= link_to "ログイン", new_user_session_path %>
+
+<%= link_to "新規登録", new_user_registration_path %>
+
+使用の際は、
+<% if user_signed_in? %>
+
+<% else %>
+
+<% end %>
+
+の併用も忘れずに。

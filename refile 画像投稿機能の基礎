@@ -1,0 +1,61 @@
+refile 画像投稿機能の基礎
+
+
+gem "refile", require: "refile/rails", github: 'manfe/refile'
+gem "refile-mini_magick"
+
+bundle install
+
+
+画像保存のためのカラムづくり
+
+rails g migration AddImageIdToLists image_id:string
+stringは画像のurlだったらtextだったりなかったり。
+rails g model モデル名 カラム名:データ型 nカラム名２:データ型２...でも。
+
+
+rails db:migrate
+
+
+
+attachmentメソッドの追加
+
+attachmentメソッドとは、refileが指定のカラムにアクセスするためにひつようなメソッドのこと。
+これによりDBに存在する画像を取得したりアップロードが可能となる。
+
+app/models/list.rbにて
+
+class List < ApplicationRecord
+    attachment :image
+end
+
+
+マイページの画像指定に用いるなら、
+private以下のparams.requireに:imageと追加すればいい。
+
+画像の投稿フォームの基本形はは以下の通り。
+
+  <%= f.attachment_field :image %>
+
+画像の表示はこちら
+
+  <%= attachment_image_tag list, :image, :fill, 100, 100, format: 'jpeg' %>
+
+:fill以下で幅と高さ、formatで拡張子を指定。
+
+
+＊RuntimeErrorが表示された場合
+
+Refile.secret_key……の部分をコピーしてconfig/initializers/application_controller_renderer.rbファイルの最後に貼り付けます
+
+Refile.secret_key = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
+こうだぞ。
+
+attachment_image_tagのオプション
+
+<%= attachment_image_tag post_image.user, :profile_image, :fill, 100, 100, format: 'jpeg', fallback: "no_image.jpg" %>
+
+<%= attachment_image_tag 保存先インスタンス名, :保存先カラム名, :サイズ（横幅,高さ）, 画像拡張子, 代替画像 %>
+
+代替画像も入れられるよ！

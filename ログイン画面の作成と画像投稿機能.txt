@@ -1,0 +1,226 @@
+ログイン画面の作成
+
+
+<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+
+#フォームに入力されたemailアドレスとパスワードをsession_path(deviseのユーザ認証を行うコントローラ)にわたして、認証を行っている。　ユーザ登録のときと一緒。
+
+
+以下、こんな感じ。
+  <div class="form-group has-icon">
+      <label class="control-label sr-only" for="inputEmail">Email</label>
+      <%= f.email_field :email, autofocus: true, class:"form-control", id:"inputEmail", placeholder:"メールアドレス"%>
+      <span class="fa fa-envelope form-control-icon" aria-hidden="true"></span>
+    </div>
+    <div class="form-group has-icon">
+      <label class="control-label sr-only" for="inputPassword">Password</label>
+      <%= f.password_field :password, autocomplete: "off", class:"form-control", id:"inputPassword", placeholder:"パスワード" %>
+      <span class="fa fa-lock form-control-icon" aria-hidden="true"></span>
+    </div>
+    <%= f.submit "サインイン", class:"btn btn-lg btn-block btn-base-1 mt-20" %>
+<% end %>
+
+
+ログイン認証後の画面を設定
+
+deviseだと、ログイン認証後はroutes.rb内のrootパスへredirectされる
+	→　root 'post_images#index' (今回は投稿画像の一覧画面先)
+
+
+画像の投稿機能の作成
+
+refile(と、refile-mini_magick)のgemを使って実装
+
+gem "refile", require: "refile/rails", github: 'manfe/refile'
+gem "refile-mini_magick"
+
+bundle install
+
+
+投稿画像の管理用テーブルの作成
+
+rails g model PostImage shop_name:text image_id:text caption:text user_id:integer
+
+モデル名PostImageは、ファイル名post_image.rbとなる。
+
+
+モデル同士の関連付け
+
+わかる：ユーザのID
+わからない：テーブル内のユーザ名
+	→　ユーザ情報のモデルと、投稿画像情報のモデルとを関連付ける
+
+１：Nの関係性をモデルに実装
+user_id（投稿したユーザのID）とid（投稿画像のID）は一対多の関係になる
+	→　１：Nの関係性
+		→　Railsの規約に従いモデル内に記載　「アソシエーション（関連付け機能）」
+
+UserモデルにPostImageモデルを関連付ける
+
+app/models/users.rb内にて
+
+class User < ApplicationRecord
+    # Include default devise modules. Others available are:
+    # :confirmable, :lockable, :timeoutable and :omniauthable
+    devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable
+
+    has_many :post_images, dependent: :destroy
+
+end
+
+	has_manyの後に、１：Nの関係になるモデル名を複数形で記述。
+
+PostImageモデルにUserモデルを関連付ける
+
+app/mmodels/post_image.rbにて
+
+class PostImage < ApplicationRecord
+
+    belongs_to :user
+
+end
+
+	belongs_toメソッドはhas_manyメソッドの対の機能となる。
+	単数形になっていることに注意。
+
+rails db:migrate
+
+
+コントローラの作成
+
+rails g controller PostImages
+
+アクションメソッドの記述
+
+今回はnew,create,index,show
+
+routes.rbファイルの編集
+
+resources :post_images, only: [:new, :create, :index, :show]
+
+	= only =
+	生成するルーティングを限定するオプション。
+
+ヘッダーの変更
+	ログイン状態でログインや新規登録の表示をログアウトなどに変更する
+
+app/views/layouts/application.html.erbにて
+
+<div id="slidemenu">
+  <ul class="nav navbar-nav navbar-right" data-hover="dropdown" data-animations="zoomIn fadeIn fadeInUp fadeIn">
+    <% if user_signed_in? %>
+      <li class="">
+        <%= link_to "ログアウト", destroy_user_session_path, method: :delete %>
+      </li>
+      <li class="">
+        <%= link_to '投稿フォーム', new_post_image_path %>
+      </li>
+      <li class="">
+        <!-- ↓以下のコードは、5章で正しいroutingに書き直します。 -->
+        <%= link_to 'マイページ', "#" %>
+      </li>
+    <% else %>
+      <li class="">
+        <%= link_to "新規登録", new_user_registration_path %>
+      </li>
+      <li class="">
+        <%= link_to "ログイン", new_user_session_path %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+	user_signed_in　devise側で用意しているヘルパー。ログイン済みならtrueが返される
+
+
+form_forの挿入
+
+ひな型
+
+<%= form_for(@post_image) do |f| %>
+ 
+    <% if @post_image.errors.any? %>
+        <%= @post_image.errors.count %>件のエラーが発生しました
+        <% @post_image.errors.full_messages.each do |message| %>
+            <%= message %>
+        <% end %>
+    <% end %>
+ 
+    <%= f.attachment_field :image %>
+    <%= f.text_field :shop_name %>
+    <%= f.text_area :caption %>
+    <%= f.submit %>
+<% end %>
+
+	errors　モデルにバリデーションをかけたときに、発生したエラーの内容を確認できるメソッド
+			any? と組み合わせることで、エラーが発生しているかどうかを判別できる。
+			full_message と組み合わせることで、エラーの内容を出力できる。
+			（エラー文は配列で保存されているため、eachを使う）
+
+
+
+<form>タグを消しつつ
+
+app/views/post_images/new.html.erbにて
+
+<!-- <form> -->
+<%= form_for(@post_image, url: post_images_path) do |f| %>
+  <% if @post_image.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= @post_image.errors.count %>件のエラーが発生しました。</h2>
+      <ul>
+      <% @post_image.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="row">
+    <div class="col-sm-12">
+      <%= f.attachment_field :image %>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="form-group has-icon">
+        <label class="control-label sr-only">ショップ名</label>
+        <%= f.text_field :shop_name, class:"form-control", placeholder:"ショップ名" %>
+        <span class="fa fa-building form-control-icon" aria-hidden="true"></span>
+      </div>
+    </div>
+    <div class="col-sm-6">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <%= f.text_area :caption, class:"form-control", rows:"3", placeholder:"コメントここに" %>
+    </div>
+  </div>
+  <hr>
+  <%= f.submit "送信", class:"btn btn-lg btn-block btn-base-1 mt-20" %>
+<% end %>
+<!-- </form> -->
+
+
+app/models/post_image.rbにて
+
+class PostImage < ApplicationRecord
+  belongs_to :user
+  attachment :image # ここを追加（_idは含めません）
+end
+
+中略
+
+
+トップページ（ログイン認証ページへの強制移動）の作成
+
+ログイン認証ページにアクセスされた際のredirect
+
+app/controllers/application_controller.rbにて
+
+class ApplicationController < ActionController::Base
+    before_action :authenticate_user!
+
+

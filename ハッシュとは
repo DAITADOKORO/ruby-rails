@@ -1,0 +1,88 @@
+ハッシュとは
+
+配列と近い性質。
+インデックスとして整数値以外のものも使える。プラスアルファ。
+例えば文字列をインデックス（ハッシュの場合はこの時のインデックスをキーと呼ぶ）として使える。
+
+>> user = {}                          # {}は空のハッシュ　ブロックと紛らわしいけど別物（こっちは並び順ーー順序が保証されづらい）
+=> {}
+>> user["first_name"] = "Michael"     # キーが "first_name" で値が "Michael"
+=> "Michael"
+>> user["last_name"] = "Hartl"        # キーが "last_name" で値が "Hartl"
+=> "Hartl"
+>> user["first_name"]                 # 要素へのアクセスは配列の場合と似ている
+=> "Michael"
+>> user                               # ハッシュのリテラル表記
+=> {"last_name"=>"Hartl", "first_name"=>"Michael"}
+
+まとめてやろう。
+
+>> user = { "first_name" => "Michael", "last_name" => "Hartl" }
+=> {"last_name"=>"Hartl", "first_name"=>"Michael"}
+
+
+シンボルを使おう。
+
+  :name   こいつね。
+
+>> h1 = { :name => "Michael Hartl", :email => "michael@example.com" }
+=> {:name=>"Michael Hartl", :email=>"michael@example.com"}
+>> h2 = { name: "Michael Hartl", email: "michael@example.com" }
+=> {:name=>"Michael Hartl", :email=>"michael@example.com"}
+>> h1 == h2
+=> true
+
+:name =>  ==  name:
+
+
+ハッシュの中のハッシュ（ネストされたハッシュ）を使おう
+
+>> params = {}        # 'params' というハッシュを定義する ('parameters' の略)。
+=> {}
+>> params[:user] = { name: "Michael Hartl", email: "mhartl@example.com" }
+=> {:name=>"Michael Hartl", :email=>"mhartl@example.com"}
+>> params
+=> {:user=>{:name=>"Michael Hartl", :email=>"mhartl@example.com"}}
+>>  params[:user][:email]
+=> "mhartl@example.com"
+
+
+eachメソッドを用いたよく見るハッシュ
+
+>> flash = { success: "It worked!", danger: "It failed." }
+=> {:success=>"It worked!", :danger=>"It failed."}
+>> flash.each do |key, value|
+?>   puts "Key #{key.inspect} has value #{value.inspect}"
+>> end
+Key :success has value "It worked!"
+Key :danger has value "It failed."
+
+
+inspect
+  オブジェクトや配列をわかりやすい文字列で返すメソッド。
+  to_s強化版。puts nil.inspect でnilすら文字列に。
+  多用するため、pメソッドなるショートカットもある。
+
+>> puts (1..5).to_a            # 配列を文字列として出力
+1
+2
+3
+4
+5
+>> puts (1..5).to_a.inspect    # 配列のリテラルを出力
+[1, 2, 3, 4, 5]
+>> puts :name, :name.inspect
+name
+:name
+>> puts "It worked!", "It worked!".inspect
+It worked!
+"It worked!"
+
+>> p :name             # 'puts :name.inspect' と同じ
+:name
+
+
+num = {'one': 'uno','two': 'dos', 'three': 'tres'}
+num.each do |key, value|
+p "'#{key}'のスペイン語は'#[value}'"
+end

@@ -1,0 +1,35 @@
+kaminari（一覧表示数の制限）
+
+
+gem 'kaminari','~> 1.1.1'
+
+bundle install
+
+rails g kaminari:config
+
+rails g kaminari:views default
+
+
+view（今回はindexで）
+
+<% @post_images.each do |post_image| %>
+     :
+     :
+<% end %>
+<%= paginate @post_images, class: "paginate" %>
+
+
+controller
+
+app/controllers/post_images_controller.rbにて
+
+def index
+  @post_images = PostImage.page(params[:page]).reverse_order
+end
+
+
+config/initializers/kaminari_config.rbにて
+
+Kaminari.configure do |config|
+  config.default_per_page = 5
+end

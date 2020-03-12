@@ -1,0 +1,114 @@
+閲覧機能の作成
+
+投稿一覧ページの作成
+　roiting,controller,viewを設定していく。
+
+routing
+  (config/routes.rbにて)
+  get 'todolists' => 'todolists#index'
+
+  （GETなのはリンクから画面遷移して表示されるため。Post不要）
+
+indexアクションの追加
+　(todolists_controller.rbにて)
+privateの上に　def index endと入力してアクション追加
+
+
+全ての投稿を取り出して表示
+　List.allメソッドの使用
+	listsテーブルからすべてのデータを取得、インスタンス変数@listsに代入
+	indexアクション内に
+	@lists = List.allと入力
+
+　Viewファイルの作成
+	app/views/todolistsにindex.html.erb新規作成
+	@lists.eachと記述して繰り返し処理。
+	list.titleと記述して投稿のタイトルを表示。
+例）
+ <h1>投稿一覧</h1>
+ <% @lists.each do |list| %>
+    <p>タイトル</p>
+    <span><%= list.title %></span>
+ <% end %>
+
+詳細ページの作成
+
+　投稿一件ごとに詳細を表示
+	詳細ページでは、どの投稿データを表示するかを判別するため、投稿データのidもurlに含める。
+	localhost:3000/todolists/3　みたいな感じで。
+
+　　routingを追加
+ Rails.application.routes.draw do
+ 
+...
+ 
+    get 'todolists/:id' => 'todolists#show', as: 'todolist'
+    # .../todolists/1 や .../todolists/3 に該当する
+ 
+end
+
+　＝as: '名前'　で、名前付きルート＝
+	コード内でurlをわかりやすく書くために使われる
+
+　showアクションの定義
+
+　todolistsコントローラにshowアクションを追加
+
+	def show
+	end
+
+url内のidをコントローラで受け取る
+
+	def show
+	  @list = List.find(params[:id]) 
+    end
+
+投稿データはurlの/todolist/:id内の:idで判別
+アクション内にparams[id]と記述することでidを取得
+urlが/todolist/1の場合、この記述でid==1を取り出せる
+
+
+詳細ページの作成
+
+　Viewファイルの作成２
+
+	app/views/todolistsフォルダに、show.html.erbファイルを作成
+
+　レコード１件の情報を表示
+	<h2>タイトル</h2>
+	<p><%= @list.title %></p>
+	<h2>本文</h2>
+	<p><%= @list.body %></p>
+
+　詳細ページへのリンクの設定
+
+	link_toメソッドを使用。
+
+	<%= link_to 表示させるテキスト , "リンク先URL" [,オプション] %>
+
+
+	<h1>投稿一覧</h1>
+	<% @lists.each do |list| %>
+	<p>タイトル</p>
+	    <span>
+	        <%=link_to list.title, "/todolists/#{list.id}" %>
+	    </span>
+	<% end %>
+
+link_toのurlを名前付きルートに書き換え
+
+　上記のlink_to以下の部分を、
+	<span>
+        <%=link_to list.title, todolist_path(list.id) %>
+    </span>
+に書き換え。コードとしてはこっちのほうが見やすいんだと。
+
+
+
+リダイレクト先の変更
+
+　投稿後の動きをtopじゃなくてshow.html.erbにリダイレクトさせてすぐ投稿内容を閲覧できるようにしよう。
+
+さっき作った名前付きルートを使用して、
+redirect_to list_path(list.id)
+

@@ -1,0 +1,10 @@
+showアクションの作成
+
+
+findメソッドを用いて詳細ページを作る
+
+def show
+	@blog = Blog.find(params[:id])
+end
+
+	urlにパラメータが設定されていれば、params[:id]により記事のIDを取得できる。

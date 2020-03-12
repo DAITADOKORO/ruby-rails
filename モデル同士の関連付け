@@ -1,0 +1,17 @@
+モデル同士の関連付け
+
+一人のユーザが多数の画像を投稿できる
+	→ １対Nの関係
+		→　アソシエーション（関連付け機能）を使おう！
+
+1のモデルには、
+  has_many :post_images, dependent: :destroy
+
+多のモデルには、
+  belongs_to :user
+
+rails db:migrate
+
+
+
+

@@ -1,0 +1,26 @@
+titleのページごとでの変更（helper編）
+
+
+
+各view頂点にて
+  <% procide(:title, "dasitaimozi") %>
+
+layoutのapplication.html.erb、<head>直下にて
+  <title><%= full_title(yield(:title)) %></title>
+
+helpersのapplication_helperにて
+  def full_title(page_title = "")
+    base_title = "Ruby on Rails Tutorial Sample App"
+    if page_title.empty?
+      base_title
+    else
+      page_title + " | " + base_title
+    end
+  end
+
+elseのあとは、
+  "#{page_title} | #{base_title}"
+      でも可。
+
+
+provideで供給対象定めて、yieldで生み出す。
