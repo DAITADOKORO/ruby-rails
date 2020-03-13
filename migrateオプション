@@ -1,0 +1,9 @@
+NOT NULL制約
+  t.string :name, null: false
+
+文字数制限
+  t.string :name, limit: 30
+
+ユニークインデックス（同カラムで唯一のもの）
+  t.string :name, unique: true
+

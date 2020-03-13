@@ -1,0 +1,9 @@
+ヘルパー一覧
+
+validates :foo, presence: true
+validates :foo, numericality: true #数字。not文字。小数点の有無や正負も。
+validates :foo, inclusion: { in: 0..9 } #範囲。
+validates :foo, length : { maximum: 30 }
+validates :foo, uniqueness: true #一意か。
+validates :foo, confirmation: true #確認の入力と一致しているか。
+validates :foo, format: {with: /... } # 文字列のフォーマット。要正規表現。
