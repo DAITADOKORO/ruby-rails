@@ -1,0 +1,12 @@
+gemfile
+
+一番下
+
+gem 'slim-rails'
+gem 'html2slim'
+
+
+leyoutsのerb形式のファイルをslim形式に
+
+bundle exec erb2slim app/views/layouts/ --delete
+

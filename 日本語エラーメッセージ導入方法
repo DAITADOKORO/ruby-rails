@@ -1,0 +1,8 @@
+ダウンロードしたja.ymlファイルを config/localesに設置
+
+
+config/initializers/locale.rbというファイルを作成し、そこに
+
+Rails.application.config.i18n.default_locale = :ja
+
+と記入。
